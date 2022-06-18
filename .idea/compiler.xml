@@ -7,9 +7,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="gmall-realtime" />
         <module name="gmall-logger" />
-        <module name="gmall-flink" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="gmall-flink-cdc" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
