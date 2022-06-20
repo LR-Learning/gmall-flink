@@ -5,8 +5,6 @@ import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
 import com.alibaba.ververica.cdc.debezium.DebeziumSourceFunction;
 import com.flink.app.function.CustomerDeserialization;
 import com.flink.utils.MyKafkaUtil;
-import org.apache.flink.runtime.state.filesystem.FsStateBackend;
-import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -30,11 +28,11 @@ public class FlinkCDC {
 
         //2.通过FlinkCDC构建SourceFunction并读取数据
         DebeziumSourceFunction<String> sourceFunction = MySQLSource.<String>builder()
-                .hostname("hadoop102")
+                .hostname("bigdata01")
                 .port(3306)
                 .username("root")
-                .password("000000")
-                .databaseList("gmall-210325-flink")
+                .password("root")
+                .databaseList("gmall-flink")
                 .deserializer(new CustomerDeserialization())
                 .startupOptions(StartupOptions.latest())
                 .build();

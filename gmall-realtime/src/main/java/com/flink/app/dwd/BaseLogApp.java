@@ -16,6 +16,7 @@ import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
+
 //数据流：web/app -> Nginx -> SpringBoot -> Kafka(ods) -> FlinkApp -> Kafka(dwd)
 //程  序：mockLog -> Nginx -> Logger.sh  -> Kafka(ZK)  -> BaseLogApp -> kafka
 public class BaseLogApp {
@@ -101,7 +102,7 @@ public class BaseLogApp {
         OutputTag<String> displayTag = new OutputTag<String>("display") {
         };
         SingleOutputStreamOperator<String> pageDS = jsonObjWithNewFlagDS.process(new ProcessFunction<JSONObject, String>() {
-            @Override
+
             public void processElement(JSONObject value, Context ctx, Collector<String> out) throws Exception {
 
                 //获取启动日志字段
