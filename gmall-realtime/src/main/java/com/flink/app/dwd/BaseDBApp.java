@@ -20,7 +20,7 @@ import org.apache.flink.util.OutputTag;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
+
 
 
 /**
@@ -28,7 +28,9 @@ import java.nio.charset.StandardCharsets;
  * @create 2022-06-19:14:03
  *
  *  TODO 启动有问题   HBASE配置
-
+ *
+ *  数据流: web/app -> nginx -> SpringBoot -> Mysql -> FlinkApp -> Kafka(ods) ->FlinkApp -> Kafka(dwd)/Phoenix(dim)
+ *  程序:   mockDb -> Mysql -> FlinkCDC -> Kafka(ZK) -> BaseDBApp -> Kafka/Phoenix(hbase,zk,hdfs)
  */
 public class BaseDBApp {
 
