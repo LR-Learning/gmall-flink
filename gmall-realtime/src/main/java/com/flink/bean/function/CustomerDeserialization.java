@@ -1,4 +1,4 @@
-package com.flink.app.function;
+package com.flink.bean.function;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.ververica.cdc.debezium.DebeziumDeserializationSchema;

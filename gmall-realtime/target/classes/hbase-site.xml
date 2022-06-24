@@ -3,7 +3,7 @@
 <configuration>
     <property>
         <name>hbase.rootdir</name>
-        <value>hdfs://bigdata01:8020/hbase</value>
+        <value>hdfs://bigdata01:9000/hbase</value>
     </property>
 
     <property>

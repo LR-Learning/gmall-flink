@@ -81,6 +81,18 @@ public class OrderWideApp {
         // 打印测试
         orderWideWithNoDimDS.print("orderWideWithNoDimDS>>>>>>>>>>>");
         // 4. 关联维度信息
+        orderWideWithNoDimDS.map(orderWide -> {
+
+            // 关联用户维度
+            Long user_id = orderWide.getUser_id();
+
+            // 根据user_id 查询Phoenix 用户信息
+
+            // 将用户信息补充至orderWide
+
+            // 返回结果
+            return orderWide;
+        });
         // 5. 将数据写入kafka
         // 6. 启动任务
         env.execute("OrderWideApp");

@@ -7,14 +7,13 @@ import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
 import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
 import com.alibaba.ververica.cdc.debezium.DebeziumSourceFunction;
 import com.flink.bean.TableProcess;
-import com.flink.app.function.CustomerDeserialization;
-import com.flink.app.function.DimSinkFunction;
-import com.flink.app.function.TableProcessFunction;
+import com.flink.bean.function.CustomerDeserialization;
+import com.flink.bean.function.DimSinkFunction;
+import com.flink.bean.function.TableProcessFunction;
 import com.flink.utils.MyKafkaUtil;
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.common.state.MapStateDescriptor;
-import org.apache.flink.api.common.time.Time;
 
 import org.apache.flink.streaming.api.datastream.*;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -24,7 +23,6 @@ import org.apache.flink.util.OutputTag;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -44,10 +42,13 @@ public class BaseDBApp {
         // 1.获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1)
-                .setRestartStrategy(RestartStrategies.fixedDelayRestart(
-                        3,
-                        Time.of(10, TimeUnit.SECONDS)
-                ));
+                .setRestartStrategy(RestartStrategies.noRestart());
+//        env.setRestartStrategy(RestartStrategies.failureRateRestart(
+//                3, // max failures per unit
+//                Time.of(5, TimeUnit.MINUTES), //time interval for measuring failure rate
+//                Time.of(10, TimeUnit.SECONDS) // delay
+//        ));
+
 
         // 2.消费kafka ods_base_db 主题数据创建流
         String sourceTopic = "ods_base_db";
@@ -73,7 +74,7 @@ public class BaseDBApp {
                 .username("root")
                 .password("root")
                 .databaseList("gmall-realtime")
-                .tableList("table_process")
+                .tableList("gmall-realtime.table_process")
                 .startupOptions(StartupOptions.initial())
                 .deserializer(new CustomerDeserialization())
                 .build();
@@ -95,10 +96,11 @@ public class BaseDBApp {
 
         // 8.将kafka数据写入kafka主题，将Hase数据写入Phoenix表
         kafka.print("Kafka>>>>>>>>");
-        hbase.print("Habse");
+        hbase.print("Habse>>>>>>>>>>>>");
 
         hbase.addSink(new DimSinkFunction());
         kafka.addSink(MyKafkaUtil.getKafkaProducer(new KafkaSerializationSchema<JSONObject>(){
+            @Override
             public ProducerRecord<byte[], byte[]> serialize(JSONObject element, @Nullable Long timestamp){
                 return new ProducerRecord<byte[], byte[]>(element.getString("sinkTable"),
                 element.getString("after").getBytes());

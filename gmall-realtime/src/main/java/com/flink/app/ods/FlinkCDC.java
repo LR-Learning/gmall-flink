@@ -3,7 +3,7 @@ package com.flink.app.ods;
 import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
 import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
 import com.alibaba.ververica.cdc.debezium.DebeziumSourceFunction;
-import com.flink.app.function.CustomerDeserialization;
+import com.flink.bean.function.CustomerDeserialization;
 import com.flink.utils.MyKafkaUtil;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

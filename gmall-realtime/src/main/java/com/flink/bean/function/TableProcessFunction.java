@@ -1,4 +1,4 @@
-package com.flink.app.function;
+package com.flink.bean.function;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -94,10 +94,10 @@ public class TableProcessFunction extends BroadcastProcessFunction<JSONObject, S
 
     // value:{"db":"","tn":"","before":"","after":"","type":""}
     @Override
-    public void processBroadcastElement(String s, Context context, Collector<JSONObject> collector) throws Exception {
+    public void processBroadcastElement(String value, Context context, Collector<JSONObject> collector) throws Exception {
         // 广播流
         // 1.获取并解析数据
-        JSONObject jsonObject = JSON.parseObject(s);
+        JSONObject jsonObject = JSON.parseObject(value);
         String data = jsonObject.getString("after");
         TableProcess tableProcess = JSON.parseObject(data, TableProcess.class);
 
@@ -128,7 +128,7 @@ public class TableProcessFunction extends BroadcastProcessFunction<JSONObject, S
                 sinkExtend = "";
             }
 
-            StringBuffer createTableSQL = new StringBuffer("create table if not exists")
+            StringBuffer createTableSQL = new StringBuffer("create table if not exists ")
                     .append(GmallConfig.HASE_SCHEMA)
                     .append(".")
                     .append(sinkTable)
@@ -140,9 +140,9 @@ public class TableProcessFunction extends BroadcastProcessFunction<JSONObject, S
                 String field = fields[i];
                 // 判断是否为主键
                 if (sinkPK.equals(field)) {
-                    createTableSQL.append(" varchar primary key");
+                    createTableSQL.append(" varchar primary key ");
                 } else {
-                    createTableSQL.append(" varchar");
+                    createTableSQL.append(" varchar ");
                 }
 
                 // 判断是否为最后一个字段,如果不是,则添加","
@@ -157,6 +157,9 @@ public class TableProcessFunction extends BroadcastProcessFunction<JSONObject, S
 
             // 预编译SQL
             preparedStatement = connection.prepareStatement(createTableSQL.toString());
+
+            // 执行
+            preparedStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException("Phoenix表" + sinkTable + "建表失败");
         } finally {
