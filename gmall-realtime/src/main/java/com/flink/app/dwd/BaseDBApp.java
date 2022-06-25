@@ -15,6 +15,7 @@ import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 
+import org.apache.flink.api.common.time.Time;
 import org.apache.flink.streaming.api.datastream.*;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.KafkaSerializationSchema;
@@ -23,6 +24,7 @@ import org.apache.flink.util.OutputTag;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -42,12 +44,12 @@ public class BaseDBApp {
         // 1.获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1)
-                .setRestartStrategy(RestartStrategies.noRestart());
-//        env.setRestartStrategy(RestartStrategies.failureRateRestart(
-//                3, // max failures per unit
-//                Time.of(5, TimeUnit.MINUTES), //time interval for measuring failure rate
-//                Time.of(10, TimeUnit.SECONDS) // delay
-//        ));
+//                .setRestartStrategy(RestartStrategies.noRestart());
+                .setRestartStrategy(RestartStrategies.failureRateRestart(
+                3, // max failures per unit
+                Time.of(5, TimeUnit.MINUTES), //time interval for measuring failure rate
+                Time.of(10, TimeUnit.SECONDS) // delay
+        ));
 
 
         // 2.消费kafka ods_base_db 主题数据创建流
